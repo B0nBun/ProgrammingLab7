@@ -4,9 +4,8 @@ import itmo.app.shared.ClientRequest;
 import itmo.app.shared.ServerResponse;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
-import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
 import java.nio.channels.SocketChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -91,27 +90,9 @@ public class Client {
                     "IO Exception during reading response: {}",
                     err.getMessage()
                 );
-            } catch (BufferOverflowException err) {
+            } catch (BufferUnderflowException err) {
                 Client.logger.warn("Couldn't connect to the server...");
-                Client.logger.info("Trying to reconnect");
-                var previous = channel;
-                try {
-                    var newChannel = new BlockingChannelWrapper(
-                        SocketChannel.open(serverAddress)
-                    );
-                    try {
-                        previous.close();
-                    } catch (IOException __) {}
-                    channel = newChannel;
-                    Client.logger.info("Connected! Input your command: ");
-                } catch (ConnectException cerr) {
-                    Client.logger.error("Connection refused: {}", cerr.getMessage());
-                } catch (IOException cerr) {
-                    Client.logger.error(
-                        "Couldn't open new channel: {}",
-                        cerr.getMessage()
-                    );
-                }
+                break;
             }
         }
 
