@@ -31,11 +31,15 @@ public class Server {
             );
         }
         try {
-            Vehicles.connectToDatabase(psqlUrl);
+            Vehicles.instantiateDatabase(psqlUrl);
             Server.logger.info("Connected to the database: {}", psqlUrl);
         } catch (SQLException err) {
-            Server.logger.error("Couldn't connect to the database: {}", err.getMessage());
+            Server.logger.error("Error in database instantiation: {}", err.getMessage());
             return;
+        }
+
+        for (var element : Vehicles.stream().toList()) {
+            Server.logger.info("Loaded a vehicle: {}", element);
         }
 
         @SuppressWarnings({ "resource" })
