@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 public class RequestReadThread extends Thread {
@@ -34,6 +35,10 @@ public class RequestReadThread extends Thread {
             } catch (IOException errr) {
                 Server.logger.error("Couldn't close the socket: {}" + errr.getMessage());
             }
+        } catch (BufferUnderflowException err) {
+            Server.logger.warn(
+                "Buffer underflow exception, user most likely disconnected"
+            );
         }
     }
 
