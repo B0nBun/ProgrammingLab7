@@ -7,3 +7,5 @@ dependency-reduced-pom.xml
 .settings
 .project
 target
+
+.env

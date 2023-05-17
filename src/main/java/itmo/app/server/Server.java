@@ -1,8 +1,10 @@
 package itmo.app.server;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +14,30 @@ public class Server {
         "ru.ifmo.app.server.logger"
     );
 
+    private static Dotenv dotenv;
+
+    static {
+        Server.dotenv = Dotenv.configure().load();
+    }
+
     public static void main(String[] args) throws IOException {
+        String psqlUrl = Server.dotenv.get("VEHICLES_DATABASE_URL");
+        if (args.length >= 1) {
+            psqlUrl = args[0];
+        }
+        if (psqlUrl == null) {
+            Server.logger.warn(
+                "Url to database is unknown. Either set the VEHICLES_DATABASE_URL environment variable or provide the url in the command line arguments"
+            );
+        }
+        try {
+            Vehicles.connectToDatabase(psqlUrl);
+            Server.logger.info("Connected to the database: {}", psqlUrl);
+        } catch (SQLException err) {
+            Server.logger.error("Couldn't connect to the database: {}", err.getMessage());
+            return;
+        }
+
         @SuppressWarnings({ "resource" })
         var server = new ServerSocket(1111);
 
