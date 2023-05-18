@@ -4,6 +4,7 @@ import itmo.app.shared.ClientRequest;
 import itmo.app.shared.ServerResponse;
 import itmo.app.shared.commands.Command;
 import itmo.app.shared.commands.CommandRegistery;
+import itmo.app.shared.exceptions.InvalidParamsException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -119,7 +120,13 @@ public class Client {
                 Client.logger.warn("Unknown command'" + nameAndParams.getKey() + "'");
                 continue;
             }
-            Serializable params = command.getParamsFromStrings(nameAndParams.getValue());
+            Serializable params;
+            try {
+                params = command.getParamsFromStrings(nameAndParams.getValue());
+            } catch (InvalidParamsException err) {
+                Client.logger.error("Invalid params: {}", err.getMessage());
+                continue;
+            }
             Serializable additional = command.scanAdditionalObject(
                 currentScanner,
                 currentScanner != inputScanner

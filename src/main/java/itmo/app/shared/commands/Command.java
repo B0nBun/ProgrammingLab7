@@ -1,6 +1,7 @@
 package itmo.app.shared.commands;
 
 import itmo.app.shared.ClientRequest;
+import itmo.app.shared.exceptions.InvalidParamsException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -17,7 +18,8 @@ public interface Command<P extends Serializable, A extends Serializable> {
 
     public static Serializable dummySerializable = new Serializable() {};
 
-    public P getParamsFromStrings(List<String> stringParams);
+    public P getParamsFromStrings(List<String> stringParams)
+        throws InvalidParamsException;
 
     public A scanAdditionalObject(Scanner scanner, boolean logBack);
 

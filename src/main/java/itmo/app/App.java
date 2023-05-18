@@ -8,7 +8,6 @@ import itmo.app.server.Server;
  *
  * add if max
  * count greater than fuel type
- * exit
  * filter greater than
  * group counting by id
  * remove by id

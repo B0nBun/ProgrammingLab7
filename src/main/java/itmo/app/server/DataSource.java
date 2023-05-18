@@ -106,6 +106,22 @@ public class DataSource {
             }
         }
 
+        public static boolean removeById(String login, int id) throws SQLException {
+            try (
+                var stat = DataSource.database.prepareStatement(
+                    """
+                        delete from vehicles where created_by = ? and id = ?
+                        """
+                )
+            ) {
+                stat.setString(1, login);
+                stat.setInt(2, id);
+                int removed = stat.executeUpdate();
+                DataSource.Vehicles.collection.removeIf(v -> v.id() == id);
+                return removed > 0;
+            }
+        }
+
         public static int clear(String login) throws SQLException {
             try (
                 var stat = DataSource.database.prepareStatement(

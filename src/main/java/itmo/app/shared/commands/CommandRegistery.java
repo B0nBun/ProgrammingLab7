@@ -15,7 +15,8 @@ public class CommandRegistery {
         .put(new AddCommand(), "add", "a")
         .put(new ClearCommand(), "clear")
         .put(new HeadCommand(), "head")
-        .put(new InfoCommand(), "info");
+        .put(new InfoCommand(), "info")
+        .put(new RemoveByIdCommand(), "remove_by_id");
 
     private LinkedHashMap<Collection<String>, Command<? extends Serializable, ? extends Serializable>> commandsMap = new LinkedHashMap<>();
 
