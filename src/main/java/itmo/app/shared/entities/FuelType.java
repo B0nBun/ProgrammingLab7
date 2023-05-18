@@ -10,6 +10,7 @@ public enum FuelType {
     ANTIMATTER;
 
     public static FuelType fromString(String string) {
+        if (string == null) return null;
         for (var value : FuelType.values()) {
             if (value.toString().toLowerCase().equals(string.toLowerCase())) {
                 return value;

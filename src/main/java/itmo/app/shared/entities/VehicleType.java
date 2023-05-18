@@ -8,6 +8,7 @@ public enum VehicleType {
     BICYCLE;
 
     public static VehicleType fromString(String string) {
+        if (string == null) return null;
         for (var value : VehicleType.values()) {
             if (value.toString().toLowerCase().equals(string.toLowerCase())) {
                 return value;
