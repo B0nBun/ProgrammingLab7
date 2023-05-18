@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class Server {
 
-    public static final Logger logger = LoggerFactory.getLogger(
-        "ru.ifmo.app.server.logger"
-    );
+    public static final Logger logger = LoggerFactory.getLogger("itmo.app.server.logger");
 
     private static Dotenv dotenv;
 
@@ -36,10 +34,6 @@ public class Server {
         } catch (SQLException err) {
             Server.logger.error("Error in database instantiation: {}", err.getMessage());
             return;
-        }
-
-        for (var element : DataSource.Vehicles.stream().toList()) {
-            Server.logger.info("Loaded a vehicle: {}", element);
         }
 
         @SuppressWarnings({ "resource" })

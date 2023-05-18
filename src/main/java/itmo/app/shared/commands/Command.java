@@ -19,7 +19,7 @@ public interface Command<P extends Serializable, A extends Serializable> {
 
     public P getParamsFromStrings(List<String> stringParams);
 
-    public A scanAdditionalObject(Scanner scanner);
+    public A scanAdditionalObject(Scanner scanner, boolean logBack);
 
     public void execute(Context<P, A> commandContext);
 

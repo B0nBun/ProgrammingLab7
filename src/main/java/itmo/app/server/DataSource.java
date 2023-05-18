@@ -36,6 +36,42 @@ public class DataSource {
         public static Stream<Vehicle> stream() {
             return collection.stream();
         }
+
+        public static void add(String login, Vehicle.CreationSchema schema)
+            throws SQLException {
+            try (
+                var stat = DataSource.database.prepareStatement(
+                    """
+                        with coords_id as (insert into coordinates(x, y) values (?, ?) returning id)
+                        insert into vehicles (created_by, name, coordinates_id, engine_power, vehicle_type, fuel_type)
+                            values(?, ?, (select id from coords_id), ?, ?::vehicle_type, ?::fuel_type)
+                            returning id, creation_date
+                        """
+                )
+            ) {
+                stat.setInt(1, schema.coordinates().x());
+                stat.setFloat(2, schema.coordinates().y());
+                stat.setString(3, login);
+                stat.setString(4, schema.name());
+                stat.setInt(5, schema.enginePower());
+                stat.setString(6, schema.vehicleType().toString().toLowerCase());
+                stat.setString(7, schema.fuelType().toString().toLowerCase());
+                ResultSet res = stat.executeQuery();
+                res.next();
+                Vehicles.collection.add(
+                    new Vehicle(
+                        res.getInt("id"),
+                        schema.name(),
+                        login,
+                        schema.coordinates(),
+                        res.getDate("creation_date").toLocalDate(),
+                        schema.enginePower(),
+                        schema.vehicleType(),
+                        schema.fuelType()
+                    )
+                );
+            }
+        }
     }
 
     public static class Auth {
@@ -202,7 +238,7 @@ public class DataSource {
                         res.getInt("vehicle_id"),
                         res.getString("name"),
                         res.getString("created_by"),
-                        new Coordinates(res.getLong("x"), res.getInt("y")),
+                        new Coordinates(res.getInt("x"), res.getFloat("y")),
                         res.getDate("creation_date").toLocalDate(),
                         res.getInt("engine_power"),
                         VehicleType.fromString(res.getString("vehicle_type")),

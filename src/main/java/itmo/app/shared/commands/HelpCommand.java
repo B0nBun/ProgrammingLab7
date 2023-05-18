@@ -13,7 +13,7 @@ public class HelpCommand implements Command<Serializable, Serializable> {
     }
 
     @Override
-    public Serializable scanAdditionalObject(Scanner scanner) {
+    public Serializable scanAdditionalObject(Scanner scanner, boolean logback) {
         return Command.dummyAdditionalObject;
     }
 

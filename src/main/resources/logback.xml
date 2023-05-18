@@ -33,17 +33,17 @@
     </encoder>
   </appender>
   
-  <logger name="ru.ifmo.app.local.logger">
+  <logger name="itmo.app.local.logger">
     <appender-ref ref="CLIENT_STDOUT"/>
     <appender-ref ref="FILE" />
   </logger>
 
-  <logger name="ru.ifmo.app.client.logger">
+  <logger name="itmo.app.client.logger">
     <appender-ref ref="CLIENT_STDOUT"/>
     <appender-ref ref="FILE" />
   </logger>
   
-  <logger name="ru.ifmo.app.server.logger">
+  <logger name="itmo.app.server.logger">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="FILE"/>
   </logger>

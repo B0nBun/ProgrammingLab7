@@ -19,9 +19,7 @@ import org.slf4j.LoggerFactory;
 
 public class Client {
 
-    public static final Logger logger = LoggerFactory.getLogger(
-        "ru.ifmo.app.client.logger"
-    );
+    public static final Logger logger = LoggerFactory.getLogger("itmo.app.client.logger");
 
     public static void main(String[] args) throws ClassNotFoundException {
         String login = null;
@@ -88,7 +86,10 @@ public class Client {
                 continue;
             }
             Serializable params = command.getParamsFromStrings(nameAndParams.getValue());
-            Serializable additional = command.scanAdditionalObject(currentScanner);
+            Serializable additional = command.scanAdditionalObject(
+                currentScanner,
+                currentScanner != inputScanner
+            );
             var request = new ClientRequest<Serializable, Serializable>(
                 login,
                 password,

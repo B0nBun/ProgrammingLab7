@@ -11,9 +11,10 @@ public class CommandRegistery {
 
     public static CommandRegistery global = new CommandRegistery()
         .put(new HelpCommand(), "help", "h")
-        .put(new ShowCommand(), "show", "s");
+        .put(new ShowCommand(), "show", "s")
+        .put(new AddCommand(), "add", "a");
 
-    private LinkedHashMap<Collection<String>, Command<Serializable, Serializable>> commandsMap = new LinkedHashMap<>();
+    private LinkedHashMap<Collection<String>, Command<? extends Serializable, ? extends Serializable>> commandsMap = new LinkedHashMap<>();
 
     /**
      * Put a command entry in the internal map
@@ -24,7 +25,7 @@ public class CommandRegistery {
      */
     private CommandRegistery put(
         Collection<String> commandAliases,
-        Command<Serializable, Serializable> command
+        Command<? extends Serializable, ? extends Serializable> command
     ) {
         this.commandsMap.put(commandAliases, command);
         return this;
@@ -38,7 +39,7 @@ public class CommandRegistery {
      * @return {@code this} for method chaining
      */
     private CommandRegistery put(
-        Command<Serializable, Serializable> command,
+        Command<? extends Serializable, ? extends Serializable> command,
         String... commandAliases
     ) {
         return this.put(Arrays.asList(commandAliases), command);
@@ -55,7 +56,9 @@ public class CommandRegistery {
     public Command<Serializable, Serializable> get(String commandName) {
         for (var entry : this.commandsMap.entrySet()) {
             if (entry.getKey().contains(commandName)) {
-                return entry.getValue();
+                @SuppressWarnings({ "unchecked" })
+                var c = (Command<Serializable, Serializable>) entry.getValue();
+                return c;
             }
         }
         return null;
@@ -66,7 +69,7 @@ public class CommandRegistery {
      *
      * @return
      */
-    public Set<Entry<Collection<String>, Command<Serializable, Serializable>>> getAllCommands() {
+    public Set<Entry<Collection<String>, Command<? extends Serializable, ? extends Serializable>>> getAllCommands() {
         return this.commandsMap.entrySet();
     }
 }
