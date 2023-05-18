@@ -5,7 +5,7 @@ import itmo.app.server.Server;
 
 /**
  * TODO commands:
- * 
+ *
  * add if max
  * clear
  * count greater than fuel type

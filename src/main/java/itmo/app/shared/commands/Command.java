@@ -33,6 +33,7 @@ public interface Command<P extends Serializable, A extends Serializable> {
 
     public static Entry<String, List<String>> nameAndStringParams(String commandString) {
         var splitted = List.of(commandString.trim().split("\\s+"));
+        if (splitted.size() == 0) return null;
         return Map.entry(splitted.get(0), splitted.subList(1, splitted.size()));
     }
 }
