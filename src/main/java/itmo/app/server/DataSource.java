@@ -194,13 +194,14 @@ public class DataSource {
         try (var stat = DataSource.database.createStatement();) {
             Deque<Vehicle> newCollection = new ArrayDeque<>();
             ResultSet res = stat.executeQuery(
-                "select vehicles.id, name, creation_date, engine_power, vehicle_type, fuel_type, coordinates.x, coordinates.y from vehicles inner join coordinates on vehicles.coordinates_id = coordinates.id;"
+                "select *, vehicles.id as vehicle_id, coordinates.x, coordinates.y from vehicles inner join coordinates on vehicles.coordinates_id = coordinates.id;"
             );
             while (res.next()) {
                 newCollection.add(
                     new Vehicle(
-                        res.getInt("id"),
+                        res.getInt("vehicle_id"),
                         res.getString("name"),
+                        res.getString("created_by"),
                         new Coordinates(res.getLong("x"), res.getInt("y")),
                         res.getDate("creation_date").toLocalDate(),
                         res.getInt("engine_power"),
