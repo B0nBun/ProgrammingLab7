@@ -4,6 +4,23 @@ import itmo.app.client.Client;
 import itmo.app.server.Server;
 
 /**
+ * TODO commands:
+ * 
+ * add if max
+ * clear
+ * count greater than fuel type
+ * execute script
+ * exit
+ * filter greater than
+ * group counting by id
+ * head
+ * info
+ * remove by id
+ * remove lower
+ * update
+ */
+
+/**
     1. Организовать хранение коллекции в реляционной СУБД (PostgresQL). Убрать хранение коллекции в файле. x
     2. Для генерации поля id использовать средства базы данных (sequence). x
     3. Обновлять состояние коллекции в памяти только при успешном добавлении объекта в БД
