@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public record ClientRequest(
     String login,
-    String passwordHash,
+    String password,
     String commandName,
     Serializable commandParameters,
     Serializable additionalObject

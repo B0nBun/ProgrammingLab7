@@ -3,12 +3,9 @@ package itmo.app.client;
 import itmo.app.shared.ClientRequest;
 import itmo.app.shared.ServerResponse;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.nio.BufferUnderflowException;
 import java.nio.channels.SocketChannel;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Stack;
@@ -24,12 +21,8 @@ public class Client {
     public static void main(String[] args) throws ClassNotFoundException {
         Client.logger.info("Login:");
         String login = System.console().readLine();
-        String passwordHashed;
-        {
-            Client.logger.info("Password:");
-            String password = new String(System.console().readPassword());
-            passwordHashed = hashPassword(password);
-        }
+        Client.logger.info("Password:");
+        String password = new String(System.console().readPassword());
 
         var serverAddress = new InetSocketAddress("127.0.0.1", 1111);
 
@@ -67,10 +60,7 @@ public class Client {
                 break;
             }
 
-            ClientRequest request;
-            {
-                request = new ClientRequest(login, passwordHashed, commandString, "", "");
-            }
+            var request = new ClientRequest(login, password, commandString, "", "");
 
             try {
                 channel.writeRequest(request);
@@ -100,19 +90,5 @@ public class Client {
         try {
             channel.close();
         } catch (IOException __) {}
-    }
-
-    private static String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-224");
-            var no = new BigInteger(1, md.digest(password.getBytes()));
-            String hash = no.toString(16);
-            while (hash.length() < 32) {
-                hash = "0" + hash;
-            }
-            return hash;
-        } catch (NoSuchAlgorithmException err) {
-            throw new RuntimeException(err.getMessage());
-        }
     }
 }
