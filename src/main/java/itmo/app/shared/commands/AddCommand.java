@@ -11,7 +11,7 @@ public class AddCommand implements Command<Serializable, Vehicle.CreationSchema>
 
     @Override
     public Serializable getParamsFromStrings(List<String> stringParams) {
-        return Command.dummyParams;
+        return Command.dummySerializable;
     }
 
     @Override

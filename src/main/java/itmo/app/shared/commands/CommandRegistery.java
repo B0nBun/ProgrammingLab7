@@ -12,7 +12,10 @@ public class CommandRegistery {
     public static CommandRegistery global = new CommandRegistery()
         .put(new HelpCommand(), "help", "h")
         .put(new ShowCommand(), "show", "s")
-        .put(new AddCommand(), "add", "a");
+        .put(new AddCommand(), "add", "a")
+        .put(new ClearCommand(), "clear")
+        .put(new HeadCommand(), "head")
+        .put(new InfoCommand(), "info");
 
     private LinkedHashMap<Collection<String>, Command<? extends Serializable, ? extends Serializable>> commandsMap = new LinkedHashMap<>();
 

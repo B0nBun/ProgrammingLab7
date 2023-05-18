@@ -7,17 +7,15 @@ import itmo.app.server.Server;
  * TODO commands:
  *
  * add if max
- * clear
  * count greater than fuel type
- * execute script
  * exit
  * filter greater than
  * group counting by id
- * head
- * info
  * remove by id
  * remove lower
  * update
+ *
+ * TODO: Write help messages for every command
  */
 
 /**

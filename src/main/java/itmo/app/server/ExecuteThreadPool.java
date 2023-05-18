@@ -73,6 +73,13 @@ public class ExecuteThreadPool {
             printer.println("Couldn't find command '" + request.commandName() + "'");
             return;
         }
-        command.execute(new Command.Context<>(request, printer));
+        try {
+            command.execute(new Command.Context<>(request, printer));
+        } catch (SQLException err) {
+            printer.println(
+                "Couldn't execute the command due to the SQL exception: " +
+                err.getMessage()
+            );
+        }
     }
 }

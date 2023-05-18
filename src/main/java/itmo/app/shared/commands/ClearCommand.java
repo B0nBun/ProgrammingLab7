@@ -2,10 +2,11 @@ package itmo.app.shared.commands;
 
 import itmo.app.server.DataSource;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
-public class ShowCommand implements Command<Serializable, Serializable> {
+public class ClearCommand implements Command<Serializable, Serializable> {
 
     @Override
     public Serializable getParamsFromStrings(List<String> stringParams) {
@@ -18,16 +19,8 @@ public class ShowCommand implements Command<Serializable, Serializable> {
     }
 
     @Override
-    public void execute(Context<Serializable, Serializable> commandContext) {
-        DataSource.Vehicles
-            .stream()
-            .forEach(vehicle -> {
-                commandContext.printer().println(vehicle);
-            });
-    }
-
-    @Override
-    public String helpMessage() {
-        return "prints out the collection";
+    public void execute(Context<Serializable, Serializable> context) throws SQLException {
+        int removed = DataSource.Vehicles.clear(context.request().login());
+        context.printer().println("Removed " + removed + " elements");
     }
 }

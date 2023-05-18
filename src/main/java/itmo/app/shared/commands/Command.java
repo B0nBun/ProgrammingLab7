@@ -3,6 +3,7 @@ package itmo.app.shared.commands;
 import itmo.app.shared.ClientRequest;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,14 +15,13 @@ public interface Command<P extends Serializable, A extends Serializable> {
         PrintWriter printer
     ) {}
 
-    public static Serializable dummyParams = new Serializable() {};
-    public static Serializable dummyAdditionalObject = new Serializable() {};
+    public static Serializable dummySerializable = new Serializable() {};
 
     public P getParamsFromStrings(List<String> stringParams);
 
     public A scanAdditionalObject(Scanner scanner, boolean logBack);
 
-    public void execute(Context<P, A> commandContext);
+    public void execute(Context<P, A> commandContext) throws SQLException;
 
     public default String helpMessage() {
         return "";

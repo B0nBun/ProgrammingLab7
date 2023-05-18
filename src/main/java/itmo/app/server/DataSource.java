@@ -42,6 +42,21 @@ public class DataSource {
             return collection.stream();
         }
 
+        public static Optional<Vehicle> head() {
+            return collection.stream().findFirst();
+        }
+
+        public static String info() {
+            return (
+                "Class: " +
+                DataSource.Vehicles.collection.getClass().getName() +
+                "\n" +
+                "Size: " +
+                DataSource.Vehicles.collection.size() +
+                "\n"
+            );
+        }
+
         public static int add(String login, Vehicle.CreationSchema schema)
             throws SQLException {
             try (
@@ -88,6 +103,21 @@ public class DataSource {
                     )
                 );
                 return res.getInt("id");
+            }
+        }
+
+        public static int clear(String login) throws SQLException {
+            try (
+                var stat = DataSource.database.prepareStatement(
+                    """
+                        delete from vehicles where created_by = ?
+                        """
+                );
+            ) {
+                stat.setString(1, login);
+                int removed = stat.executeUpdate();
+                DataSource.Vehicles.collection.removeIf(v -> v.createdBy().equals(login));
+                return removed;
             }
         }
     }

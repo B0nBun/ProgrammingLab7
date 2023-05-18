@@ -9,12 +9,12 @@ public class HelpCommand implements Command<Serializable, Serializable> {
 
     @Override
     public Serializable getParamsFromStrings(List<String> stringParams) {
-        return Command.dummyParams;
+        return Command.dummySerializable;
     }
 
     @Override
     public Serializable scanAdditionalObject(Scanner scanner, boolean logback) {
-        return Command.dummyAdditionalObject;
+        return Command.dummySerializable;
     }
 
     @Override
