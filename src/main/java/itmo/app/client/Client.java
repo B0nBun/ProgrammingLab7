@@ -88,6 +88,9 @@ public class Client {
                 Client.logger.warn("Empty command");
                 continue;
             }
+            if (nameAndParams.getKey().equals("exit")) {
+                return;
+            }
             if (nameAndParams.getKey().equals("execute_script")) {
                 List<String> params = nameAndParams.getValue();
                 if (params.size() == 0) {
