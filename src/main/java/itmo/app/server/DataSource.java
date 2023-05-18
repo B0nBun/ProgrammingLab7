@@ -12,7 +12,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class DataSource {
@@ -31,13 +34,15 @@ public class DataSource {
 
     public static class Vehicles {
 
-        private static Deque<Vehicle> collection = new ArrayDeque<>();
+        private static Collection<Vehicle> collection = Collections.synchronizedCollection(
+            new ArrayDeque<Vehicle>()
+        );
 
         public static Stream<Vehicle> stream() {
             return collection.stream();
         }
 
-        public static void add(String login, Vehicle.CreationSchema schema)
+        public static int add(String login, Vehicle.CreationSchema schema)
             throws SQLException {
             try (
                 var stat = DataSource.database.prepareStatement(
@@ -54,8 +59,20 @@ public class DataSource {
                 stat.setString(3, login);
                 stat.setString(4, schema.name());
                 stat.setInt(5, schema.enginePower());
-                stat.setString(6, schema.vehicleType().toString().toLowerCase());
-                stat.setString(7, schema.fuelType().toString().toLowerCase());
+                stat.setString(
+                    6,
+                    Optional
+                        .ofNullable(schema.vehicleType())
+                        .map(v -> v.toString().toLowerCase())
+                        .orElse(null)
+                );
+                stat.setString(
+                    7,
+                    Optional
+                        .ofNullable(schema.fuelType())
+                        .map(f -> f.toString().toLowerCase())
+                        .orElse(null)
+                );
                 ResultSet res = stat.executeQuery();
                 res.next();
                 Vehicles.collection.add(
@@ -70,6 +87,7 @@ public class DataSource {
                         schema.fuelType()
                     )
                 );
+                return res.getInt("id");
             }
         }
     }

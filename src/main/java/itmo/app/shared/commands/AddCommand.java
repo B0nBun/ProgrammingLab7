@@ -22,10 +22,11 @@ public class AddCommand implements Command<Serializable, Vehicle.CreationSchema>
     @Override
     public void execute(Context<Serializable, Vehicle.CreationSchema> commandContext) {
         try {
-            DataSource.Vehicles.add(
+            int id = DataSource.Vehicles.add(
                 commandContext.request().login(),
                 commandContext.request().additionalObject()
             );
+            commandContext.printer().println("Added a vehicle with id = " + id);
         } catch (SQLException err) {
             commandContext
                 .printer()
