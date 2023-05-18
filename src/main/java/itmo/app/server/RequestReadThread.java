@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
@@ -20,7 +21,9 @@ public class RequestReadThread extends Thread {
     @Override
     public void run() {
         try {
-            ClientRequest request = readRequest(this.client.getInputStream());
+            ClientRequest<Serializable, Serializable> request = readRequest(
+                this.client.getInputStream()
+            );
             ExecuteThreadPool.execute(this.client, request);
         } catch (IOException | ClassNotFoundException err) {
             Server.logger.error(
@@ -42,7 +45,7 @@ public class RequestReadThread extends Thread {
         }
     }
 
-    private static ClientRequest readRequest(InputStream in)
+    private static ClientRequest<Serializable, Serializable> readRequest(InputStream in)
         throws IOException, ClassNotFoundException {
         byte[] sizeBytes = in.readNBytes(Integer.BYTES);
         int objectSize = ByteBuffer.wrap(sizeBytes).getInt();
@@ -50,7 +53,8 @@ public class RequestReadThread extends Thread {
         var bytesInput = new ByteArrayInputStream(objectBytes);
         var objectInput = new ObjectInputStream(bytesInput);
         try {
-            var message = (ClientRequest) objectInput.readObject();
+            @SuppressWarnings({ "unchecked" })
+            var message = (ClientRequest<Serializable, Serializable>) objectInput.readObject();
             return message;
         } finally {
             bytesInput.close();

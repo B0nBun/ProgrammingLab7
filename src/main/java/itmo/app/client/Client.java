@@ -2,10 +2,15 @@ package itmo.app.client;
 
 import itmo.app.shared.ClientRequest;
 import itmo.app.shared.ServerResponse;
+import itmo.app.shared.commands.Command;
+import itmo.app.shared.commands.CommandRegistery;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.BufferUnderflowException;
 import java.nio.channels.SocketChannel;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Stack;
@@ -72,7 +77,25 @@ public class Client {
                 break;
             }
 
-            var request = new ClientRequest(login, password, commandString, "", "");
+            Map.Entry<String, List<String>> nameAndParams = Command.nameAndStringParams(
+                commandString
+            );
+            Command<Serializable, Serializable> command = CommandRegistery.global.get(
+                nameAndParams.getKey()
+            );
+            if (command == null) {
+                Client.logger.warn("Unknown command'" + nameAndParams.getKey() + "'");
+                continue;
+            }
+            Serializable params = command.getParamsFromStrings(nameAndParams.getValue());
+            Serializable additional = command.scanAdditionalObject(currentScanner);
+            var request = new ClientRequest<Serializable, Serializable>(
+                login,
+                password,
+                nameAndParams.getKey(),
+                params,
+                additional
+            );
 
             try {
                 channel.writeRequest(request);

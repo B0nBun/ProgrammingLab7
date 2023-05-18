@@ -6,6 +6,7 @@ import itmo.app.shared.Utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.Selector;
@@ -39,7 +40,8 @@ public class BlockingChannelWrapper implements AutoCloseable {
         }
     }
 
-    public void writeRequest(ClientRequest request) throws IOException {
+    public void writeRequest(ClientRequest<Serializable, Serializable> request)
+        throws IOException {
         while (true) {
             selector.select();
             var keys = selector.selectedKeys().iterator();
