@@ -19,10 +19,22 @@ public class Client {
     );
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Client.logger.info("Login:");
-        String login = System.console().readLine();
-        Client.logger.info("Password:");
-        String password = new String(System.console().readPassword());
+        String login = null;
+        while (login == null || login.length() == 0) {
+            Client.logger.info("Login:");
+            login = System.console().readLine();
+            if (login.length() == 0) Client.logger.warn(
+                "login must be a nonempty string"
+            );
+        }
+        String password = null;
+        while (password == null || password.length() == 0) {
+            Client.logger.info("Password:");
+            password = new String(System.console().readPassword());
+            if (password.length() == 0) Client.logger.warn(
+                "password must be a nonempty string"
+            );
+        }
 
         var serverAddress = new InetSocketAddress("127.0.0.1", 1111);
 

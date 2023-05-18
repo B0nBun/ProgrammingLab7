@@ -155,8 +155,8 @@ public class DataSource {
             stat.addBatch(
                 """
                     create table if not exists users (
-                        login varchar(64) primary key not null,
-                        password_hashed varchar(56) not null
+                        login varchar(64) primary key not null constraint non_empty_login check (length(login) > 0),
+                        password_hashed char(56) not null constraint hash_length_56 check (length(password_hashed) = 56)
                     )
                     """
             );
