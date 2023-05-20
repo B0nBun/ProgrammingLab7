@@ -27,6 +27,24 @@ public record Vehicle(
         return this.name().compareTo(other.name());
     }
 
+    public static Vehicle fromCreationSchema(
+        int id,
+        String createdBy,
+        LocalDate creationDate,
+        Vehicle.CreationSchema schema
+    ) {
+        return new Vehicle(
+            id,
+            schema.name(),
+            createdBy,
+            schema.coordinates(),
+            creationDate,
+            schema.enginePower(),
+            schema.vehicleType(),
+            schema.fuelType()
+        );
+    }
+
     public static record CreationSchema(
         String name,
         Coordinates coordinates,

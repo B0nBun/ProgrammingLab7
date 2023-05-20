@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DataSource {
@@ -151,6 +152,72 @@ public class DataSource {
                     v.name().compareTo(creationSchema.name()) < 0
                 );
                 return removed;
+            }
+        }
+
+        public static boolean update(String login, int id, Vehicle.CreationSchema schema)
+            throws SQLException {
+            try (
+                var stat = DataSource.database.prepareStatement(
+                    """
+                        with coords as (
+                            update vehicles set
+                                name = ?,
+                                engine_power = ?,
+                                vehicle_type = ?::vehicle_type,
+                                fuel_type = ?::fuel_type
+                            where created_by = ? and id = ?
+                            returning coordinates_id as id
+                        ) update coordinates set
+                            x = ?,
+                            y = ?
+                        where id = (select id from coords)
+                        """
+                )
+            ) {
+                stat.setString(1, schema.name());
+                stat.setInt(2, schema.enginePower());
+                stat.setString(
+                    3,
+                    Optional
+                        .ofNullable(schema.vehicleType())
+                        .map(v -> v.toString().toLowerCase())
+                        .orElse(null)
+                );
+                stat.setString(
+                    4,
+                    Optional
+                        .ofNullable(schema.fuelType())
+                        .map(v -> v.toString().toLowerCase())
+                        .orElse(null)
+                );
+                stat.setString(5, login);
+                stat.setInt(6, id);
+                stat.setInt(7, schema.coordinates().x());
+                stat.setFloat(8, schema.coordinates().y());
+                int changed = stat.executeUpdate();
+                var newCollection = DataSource.Vehicles.collection
+                    .stream()
+                    .map(v -> {
+                        if (
+                            v.createdBy().equals(login) && v.id() == id
+                        ) return Vehicle.fromCreationSchema(
+                            v.id(),
+                            v.createdBy(),
+                            v.creationDate(),
+                            schema
+                        );
+                        return v;
+                    })
+                    .collect(
+                        Collectors.toCollection(() ->
+                            Collections.synchronizedCollection(
+                                new ArrayDeque<>(DataSource.Vehicles.collection.size())
+                            )
+                        )
+                    );
+                DataSource.Vehicles.collection = newCollection;
+                return changed > 0;
             }
         }
     }

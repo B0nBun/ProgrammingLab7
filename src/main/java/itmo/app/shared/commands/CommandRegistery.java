@@ -21,7 +21,8 @@ public class CommandRegistery {
         .put(new GroupCountingByIdCommand(), "group_counting_by_id")
         .put(new AddIfMaxCommand(), "add_if_max")
         .put(new FilterGreaterThanCommand(), "filter_greater_than")
-        .put(new RemoveLowerCommand(), "remove_lower");
+        .put(new RemoveLowerCommand(), "remove_lower")
+        .put(new UpdateCommand(), "update");
 
     private LinkedHashMap<Collection<String>, Command<? extends Serializable, ? extends Serializable>> commandsMap = new LinkedHashMap<>();
 

@@ -11,6 +11,8 @@ import itmo.app.server.Server;
  * TODO: Write help messages for every command
  */
 
+// TODO: cascade
+
 /**
     1.  x Организовать хранение коллекции в реляционной СУБД (PostgresQL). Убрать хранение коллекции в файле. 
     2.  x Для генерации поля id использовать средства базы данных (sequence).
