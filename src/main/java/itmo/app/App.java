@@ -3,14 +3,7 @@ package itmo.app;
 import itmo.app.client.Client;
 import itmo.app.server.Server;
 
-/**
- * TODO commands:
- *
- * update
- *
- * TODO: Write help messages for every command
- */
-
+// TODO: Write help messages for every command
 // TODO: cascade
 
 /**
