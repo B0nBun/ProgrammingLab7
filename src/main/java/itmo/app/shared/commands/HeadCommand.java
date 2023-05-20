@@ -21,7 +21,7 @@ public class HeadCommand implements Command<Serializable, Serializable> {
 
     @Override
     public void execute(Context<Serializable, Serializable> commandContext) {
-        Optional<Vehicle> head = DataSource.Vehicles.head();
+        Optional<Vehicle> head = DataSource.Vehicles.stream().findFirst();
         if (head.isEmpty()) {
             commandContext.printer().println("Collection is empty");
         } else {

@@ -42,10 +42,6 @@ public class DataSource {
             return collection.stream();
         }
 
-        public static Optional<Vehicle> head() {
-            return collection.stream().findFirst();
-        }
-
         public static String info() {
             return (
                 "Class: " +
