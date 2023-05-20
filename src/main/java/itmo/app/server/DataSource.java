@@ -364,9 +364,30 @@ public class DataSource {
                         engine_power integer null check (engine_power > 0),
                         vehicle_type vehicle_type null,
                         fuel_type fuel_type null,
-                        foreign key (coordinates_id) references coordinates (id),
+                        foreign key (coordinates_id) references coordinates (id) on delete restrict on update cascade,
                         foreign key (created_by) references users (login)
                     )
+                    """
+            );
+            stat.addBatch(
+                """
+                    create or replace function delete_coordinates_after_vehicles() 
+                        returns trigger
+                        language plpgsql
+                    as $$
+                    begin
+                        delete from coordinates where id = old.coordinates_id;
+                        return old;
+                    end;
+                    $$
+                    """
+            );
+            stat.addBatch(
+                """
+                create or replace trigger delete_coordinates_with_vehicles
+                    after delete on vehicles
+                    for each row
+                    execute function delete_coordinates_after_vehicles()
                     """
             );
             stat.executeBatch();
