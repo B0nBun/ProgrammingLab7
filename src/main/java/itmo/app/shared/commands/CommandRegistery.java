@@ -18,7 +18,10 @@ public class CommandRegistery {
         .put(new InfoCommand(), "info")
         .put(new RemoveByIdCommand(), "remove_by_id")
         .put(new CountGreaterThanFuelTypeCommand(), "count_greater_than_fuel_type")
-        .put(new GroupCountingByIdCommand(), "group_counting_by_id");
+        .put(new GroupCountingByIdCommand(), "group_counting_by_id")
+        .put(new AddIfMaxCommand(), "add_if_max")
+        .put(new FilterGreaterThanCommand(), "filter_greater_than")
+        .put(new RemoveLowerCommand(), "remove_lower");
 
     private LinkedHashMap<Collection<String>, Command<? extends Serializable, ? extends Serializable>> commandsMap = new LinkedHashMap<>();
 

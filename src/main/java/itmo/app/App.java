@@ -6,9 +6,6 @@ import itmo.app.server.Server;
 /**
  * TODO commands:
  *
- * add if max
- * filter greater than
- * remove lower
  * update
  *
  * TODO: Write help messages for every command

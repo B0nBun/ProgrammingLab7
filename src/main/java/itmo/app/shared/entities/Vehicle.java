@@ -17,7 +17,16 @@ public record Vehicle(
     Integer enginePower,
     VehicleType type,
     FuelType fuelType
-) {
+)
+    implements Comparable<Vehicle> {
+    public int compareTo(Vehicle other) {
+        return this.name().compareTo(other.name());
+    }
+
+    public int compareToCreationSchema(Vehicle.CreationSchema other) {
+        return this.name().compareTo(other.name());
+    }
+
     public static record CreationSchema(
         String name,
         Coordinates coordinates,

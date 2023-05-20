@@ -132,6 +132,27 @@ public class DataSource {
                 return removed;
             }
         }
+
+        public static int removeLower(
+            String login,
+            Vehicle.CreationSchema creationSchema
+        ) throws SQLException {
+            try (
+                var stat = DataSource.database.prepareStatement(
+                    """
+                        delete from vehicles where created_by = ? and name < ?
+                        """
+                )
+            ) {
+                stat.setString(1, login);
+                stat.setString(2, creationSchema.name());
+                int removed = stat.executeUpdate();
+                DataSource.Vehicles.collection.removeIf(v ->
+                    v.name().compareTo(creationSchema.name()) < 0
+                );
+                return removed;
+            }
+        }
     }
 
     public static class Auth {
