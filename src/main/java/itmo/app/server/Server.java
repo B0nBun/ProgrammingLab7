@@ -27,20 +27,19 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        String psqlUrl = Server.dotenv
-            .map(d -> d.get("VEHICLES_DATABASE_URL"))
-            .orElse(null);
+        Optional<String> psqlUrl = Server.dotenv
+            .map(d -> d.get("VEHICLES_DATABASE_URL"));
         if (args.length >= 1) {
-            psqlUrl = args[0];
+            psqlUrl = Optional.of(args[0]);
         }
-        if (psqlUrl == null) {
+        if (psqlUrl.isEmpty()) {
             Server.logger.warn(
                 "Url to database is unknown. Either set the VEHICLES_DATABASE_URL environment variable or provide the url in the command line arguments"
             );
             return;
         }
         try {
-            DataSource.instantiateDatabase(psqlUrl);
+            DataSource.instantiateDatabase(psqlUrl.get());
             Server.logger.info("Connected to the database: {}", psqlUrl);
         } catch (SQLException err) {
             Server.logger.error("Error in database instantiation: {}", err.getMessage());
