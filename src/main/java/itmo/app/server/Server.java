@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +13,23 @@ public class Server {
 
     public static final Logger logger = LoggerFactory.getLogger("itmo.app.server.logger");
 
-    private static Dotenv dotenv;
+    private static Optional<Dotenv> dotenv;
 
     static {
-        Server.dotenv = Dotenv.configure().load();
+        try {
+            Server.dotenv = Optional.of(Dotenv.load());
+            // There is a DotenvException thrown actually, but for some reason java doesn't see it
+            // so I had to use Throwable
+        } catch (Throwable err) {
+            Server.logger.error("Couldn't load dotenv file: {}", err.getMessage());
+            Server.dotenv = Optional.empty();
+        }
     }
 
     public static void main(String[] args) throws IOException {
-        String psqlUrl = Server.dotenv.get("VEHICLES_DATABASE_URL");
+        String psqlUrl = Server.dotenv
+            .map(d -> d.get("VEHICLES_DATABASE_URL"))
+            .orElse(null);
         if (args.length >= 1) {
             psqlUrl = args[0];
         }
@@ -27,6 +37,7 @@ public class Server {
             Server.logger.warn(
                 "Url to database is unknown. Either set the VEHICLES_DATABASE_URL environment variable or provide the url in the command line arguments"
             );
+            return;
         }
         try {
             DataSource.instantiateDatabase(psqlUrl);
