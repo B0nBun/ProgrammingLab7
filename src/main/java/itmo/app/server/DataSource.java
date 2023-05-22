@@ -216,7 +216,9 @@ public class DataSource {
                             )
                         )
                     );
-                DataSource.Vehicles.collection = newCollection;
+                synchronized (Vehicles.class) {
+                    DataSource.Vehicles.collection = newCollection;
+                }
                 return changed > 0;
             }
         }
