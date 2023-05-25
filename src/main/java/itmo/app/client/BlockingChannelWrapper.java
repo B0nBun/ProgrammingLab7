@@ -66,9 +66,12 @@ public class BlockingChannelWrapper implements AutoCloseable {
         channel.read(objectSizeBuffer);
         objectSizeBuffer.flip();
         int objectSize = objectSizeBuffer.getInt();
-
         var objectBuffer = ByteBuffer.allocate(Integer.BYTES + objectSize);
-        channel.read(objectBuffer);
+        int bytesRead = 0;
+        while (bytesRead < objectSize) {
+            System.out.println(bytesRead + " " + objectSize);
+            bytesRead += channel.read(objectBuffer);
+        }
         try (
             var byteArrayStream = new ByteArrayInputStream(
                 objectBuffer.slice(Integer.BYTES, objectSize).array()

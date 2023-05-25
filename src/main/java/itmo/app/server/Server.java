@@ -27,8 +27,7 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        Optional<String> psqlUrl = Server.dotenv
-            .map(d -> d.get("VEHICLES_DATABASE_URL"));
+        Optional<String> psqlUrl = Server.dotenv.map(d -> d.get("VEHICLES_DATABASE_URL"));
         if (args.length >= 1) {
             psqlUrl = Optional.of(args[0]);
         }
